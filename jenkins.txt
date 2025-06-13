@@ -1,0 +1,34 @@
+pipeline {
+  agent any
+
+  tools {
+    nodejs "NodeJS_18"
+  }
+
+  stages {
+    stage('Clone Code') {
+      steps {
+        git 'https://github.com/muktha0617/jenkins.git'
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps {
+        sh 'npm install'
+      }
+    }
+
+    stage('Run Tests') {
+      steps {
+        // Optional if you have tests
+        sh 'echo "No tests yet"'
+      }
+    }
+
+    stage('Start App') {
+      steps {
+        sh 'node app.js &'
+      }
+    }
+  }
+}
