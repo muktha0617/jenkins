@@ -1,34 +1,43 @@
 pipeline {
-  agent any
+    agent any
 
-  tools {
-    nodejs "NodeJS_18"
-  }
-
-  stages {
-    stage('Clone Code') {
-      steps {
-        git 'https://github.com/muktha0617/jenkins.git'
-      }
+    tools {
+        nodejs 'nodejs22' // Make sure this matches the name in Jenkins -> Global Tool Configuration
     }
 
-    stage('Install Dependencies') {
-      steps {
-        sh 'npm install'
-      }
-    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],   // change branch if needed
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/muktha0617/jenkins.git'
+                        credentialsId: 'github-pat'
+                    ]]
+                ])
+            }
+        }
 
-    stage('Run Tests') {
-      steps {
-        // Optional if you have tests
-        sh 'echo "No tests yet"'
-      }
-    }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
 
-    stage('Start App') {
-      steps {
-        sh 'node app.js &'
-      }
-    }
-  }
+        stage('Test') {
+            steps {
+                sh 'echo "Test does here"'
+            }
+        }
+
+        stage('Run App') {
+            steps {
+                sh 'node server.js & sleep 5'
+            }
+        }
+    }
 }
+            
+           
+      
